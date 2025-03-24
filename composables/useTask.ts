@@ -2,6 +2,7 @@ import type { Task, CreateTaskInput, UpdateTaskInput } from '~/types/task'
 
 export const useTask = () => {
   const { supabase } = useSupabase()
+  const { user } = useAuth()
 
   const getTasks = async () => {
     const { data, error } = await supabase
@@ -14,9 +15,11 @@ export const useTask = () => {
   }
 
   const createTask = async (input: CreateTaskInput) => {
+    if (!user.value) throw new Error('ユーザーが認証されていません')
+
     const { data, error } = await supabase
       .from('tasks')
-      .insert([{ ...input, status: 'pending' }])
+      .insert([{ ...input, status: 'pending', user_id: user.value.id }])
       .select()
       .single()
 

@@ -1,7 +1,10 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="bg-white shadow rounded-lg p-6">
-      <h2 class="text-lg font-medium text-gray-900 mb-4">タスク一覧</h2>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-medium text-gray-900">タスク一覧</h2>
+        <TaskCreateModal @created="fetchTasks" />
+      </div>
       <div v-if="loading" class="text-center py-4">
         <p>読み込み中...</p>
       </div>
@@ -27,6 +30,14 @@
               <p v-if="task.description" class="text-sm text-gray-500">
                 {{ task.description }}
               </p>
+              <div class="flex items-center space-x-4 mt-1">
+                <span v-if="task.due_date" class="text-sm text-gray-500">
+                  期限: {{ new Date(task.due_date).toLocaleString() }}
+                </span>
+                <span v-if="task.priority" class="text-sm text-gray-500">
+                  優先度: {{ ['低', '中', '高'][task.priority - 1] }}
+                </span>
+              </div>
             </div>
             <button @click="deleteTask(task.id)" class="text-red-500 hover:text-red-700">
               削除
